@@ -74,6 +74,7 @@ class _MoviesScreenState extends State<MoviesScreen>
   void dispose() {
     // TODO: implement dispose
     super.dispose();
+    //abc
     //controller.dispose();
   }
 }
