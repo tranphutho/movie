@@ -2,6 +2,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:movie/feature/form_status.dart';
+import 'package:movie/feature/movies_screen/bloc/movies_presenter.dart';
+import 'package:movie/feature/movies_screen/bloc/movies_state.dart';
+import 'package:movie/injector/injector.dart';
 
 //import '../../model/sources/movies.dart';
 import '../information_movies_screen/information_movies_screen.dart';
@@ -9,7 +14,7 @@ import 'components/popular_stack_image.dart';
 
 class PopularScreenWidget extends StatefulWidget {
   // final List<Movies> movies;
-  const PopularScreenWidget({super.key});
+  PopularScreenWidget({key});
 
   @override
   State<PopularScreenWidget> createState() => _PopularScreenWidgetState();
@@ -131,39 +136,61 @@ class _PopularScreenWidgetState extends State<PopularScreenWidget> {
   //     "vote_count": 449
   //   }
   // ];
+
+  final _presenter = injector.get<MoviesPresenter>();
   @override
   Widget build(BuildContext context) {
-    return GridView.builder(
-      padding: const EdgeInsets.only(
-        top: 31,
-        left: 16,
-        right: 16,
-      ),
-      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisSpacing: 18.4,
-          crossAxisCount: 2,
-          mainAxisExtent: 300,
-          mainAxisSpacing: 31),
-      //itemCount: widget.movies.length,
-      itemCount: 1,
-      itemBuilder: (context, index) {
-        //return Container();
-        return PopularStackImgaeWidget(
-            // nameImage: "https://image.tmdb.org/t/p/w500/" +
-            //     widget.movies[index].posterPath!,
-            // date: widget.movies[index].releaseDate!,
-            // title: widget.movies[index].title!,
+    return BlocConsumer<MoviesPresenter, MoviesState>(
+      bloc: _presenter,
+      listener: (context, state) {
+        if (state.status == FormStatus.submissionInProgress) {
+          const Scaffold(
+            body: Center(
+              child: CircularProgressIndicator(),
+            ),
+          );
+        } else {
+          //Todo: dismiss Hud
+        }
+      },
+      buildWhen: (previous, current) =>
+          previous.listMovie != current.listMovie ||
+          previous.status != current.status,
+      builder: (context, state) {
+        return GridView.builder(
+          padding: const EdgeInsets.only(
+            top: 31,
+            left: 16,
+            right: 16,
+          ),
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisSpacing: 18.4,
+              crossAxisCount: 2,
+              mainAxisExtent: 300,
+              mainAxisSpacing: 31),
+          itemCount: _presenter.state.listMovie.length,
+          //itemCount: 1,
+          itemBuilder: (context, index) {
+            //return Container();
+            return PopularStackImgaeWidget(
+                nameImage: "https://image.tmdb.org/t/p/w500/" +
+                    _presenter.state.listMovie[index].posterPath!,
+                date: _presenter.state.listMovie[index].releaseDate!,
+                title: _presenter.state.listMovie[index].title,
 
-            nameImage:
-                "https://image.tmdb.org/t/p/w500/muw7d3n53CcfuSvatax1FbZEDiW.jpg",
-            //     widget.movies[index].posterPath!,
-            date: "test",
-            title: "test",
-            onTap: () {
-              final route = MaterialPageRoute(
-                  builder: (context) => InformationMoviesScreenWidget());
-              Navigator.push(context, route);
-            });
+                //nameImage:
+                // "https://image.tmdb.org/t/p/w500/muw7d3n53CcfuSvatax1FbZEDiW.jpg",
+                //     widget.movies[index].posterPath!,
+                // date: "test",
+                // title: "test",
+                onTap: () {
+                  final route = MaterialPageRoute(
+                      builder: (context) => InformationMoviesScreenWidget(
+                          movie: _presenter.state.listMovie[index]));
+                  Navigator.push(context, route);
+                });
+          },
+        );
       },
     );
   }

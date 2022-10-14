@@ -2,10 +2,13 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
+import 'package:movie/feature/data/model/movie_model.dart';
+import 'package:movie/feature/movies_screen/bloc/movies_module.dart';
 
 class ImageInformationMoviesWidget extends StatelessWidget {
-  // Movies? movies;
-  ImageInformationMoviesWidget({Key? key}) : super(key: key);
+  MovieModel movies;
+  ImageInformationMoviesWidget({required this.movies, Key? key})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -19,10 +22,10 @@ class ImageInformationMoviesWidget extends StatelessWidget {
             height: 113,
             child: ClipRRect(
               borderRadius: BorderRadius.circular(20),
-              // child: Image.network("https://image.tmdb.org/t/p/original/" +
-              //     movies!.posterPath.toString()),
-              child: Image.network(
-                  "https://image.tmdb.org/t/p/original/xfNHRI2f5kHGvogxLd0C5sB90L7.jpg"),
+              child: Image.network("https://image.tmdb.org/t/p/original/" +
+                  movies.posterPath.toString()),
+              // child: Image.network(
+              //     "https://image.tmdb.org/t/p/original/xfNHRI2f5kHGvogxLd0C5sB90L7.jpg"),
             ),
           ),
         ),
@@ -32,8 +35,8 @@ class ImageInformationMoviesWidget extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               textString(
-                  //text: movies!.title,
-                  text: "test",
+                  text: movies.title,
+                  // text: "test",
                   style: TextStyle(fontSize: 24, fontWeight: FontWeight.w700)),
               Column(
                 children: [
@@ -51,8 +54,8 @@ class ImageInformationMoviesWidget extends StatelessWidget {
                       width: 16,
                     ),
                     textString(
-                        //text: movies!.releaseDate,
-                        text: "test",
+                        text: movies.releaseDate,
+                        // text: "test",
                         style: TextStyle(
                             fontSize: 14,
                             fontFamily: "Comfortaa",
@@ -76,8 +79,8 @@ class ImageInformationMoviesWidget extends StatelessWidget {
                         width: 16,
                       ),
                       textString(
-                          //text: movies!.releaseDate,
-                          text: "test",
+                          text: movies.releaseDate,
+                          // text: "test",
                           style: TextStyle(
                               fontSize: 12,
                               fontFamily: "Comfortaa",
